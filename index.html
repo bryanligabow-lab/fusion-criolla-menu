@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fusión Criolla · Menú Interactivo</title>
+  <meta name="description" content="Menú interactivo de Fusión Criolla — Lo mejor de dos mundos en un solo lugar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__content">
+      <div class="logo">
+        <svg class="logo__icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="35" cy="60" r="28" fill="none" stroke="currentColor" stroke-width="10"/>
+          <path d="M55 45 Q72 28 78 10 Q72 22 60 38 Z" fill="currentColor"/>
+        </svg>
+        <div class="logo__text">
+          <span class="logo__brand">Fusión</span>
+          <span class="logo__script">criolla</span>
+        </div>
+      </div>
+      <p class="hero__tagline">“Lo mejor de dos mundos en un solo lugar”</p>
+      <div class="hero__actions">
+        <a href="#menu" class="btn btn--primary">Ver menú</a>
+        <button class="btn btn--ghost" id="openCart">
+          🛒 Mi orden <span class="badge" id="cartBadge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="menu" class="container">
+    <section class="controls">
+      <div class="search">
+        <span class="search__icon">🔍</span>
+        <input type="search" id="searchInput" placeholder="Buscar plato, bebida..." aria-label="Buscar" />
+      </div>
+      <div class="filters" id="filters" role="tablist"></div>
+    </section>
+
+    <section class="menu-grid" id="menuGrid" aria-live="polite"></section>
+
+    <p class="empty" id="emptyState" hidden>No se encontraron resultados 🥲</p>
+  </main>
+
+  <aside class="cart" id="cart" aria-hidden="true">
+    <div class="cart__head">
+      <h2>Mi orden</h2>
+      <button class="cart__close" id="closeCart" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="cart__items" id="cartItems">
+      <p class="cart__empty">Tu orden está vacía. ¡Añade algunos platos!</p>
+    </div>
+    <div class="cart__foot">
+      <div class="cart__total">
+        <span>Total</span>
+        <strong id="cartTotal">$0.00</strong>
+      </div>
+      <button class="btn btn--primary cart__checkout" id="checkoutBtn">Enviar orden por WhatsApp</button>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> Fusión Criolla · Menú interactivo</p>
+  </footer>
+
+  <script src="menu-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
