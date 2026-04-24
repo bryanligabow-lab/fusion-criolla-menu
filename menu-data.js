@@ -1,95 +1,146 @@
-// Datos del menú Fusión Criolla
-const MENU = [
-  // TÍPICOS
-  { cat: "tipicos", name: "Encebollado", price: 3.00, emoji: "🍲" },
-  { cat: "tipicos", name: "Guatita", price: 3.50, emoji: "🍛" },
-  { cat: "tipicos", name: "Bandera", price: 6.00, emoji: "🏁", desc: "Guatita, ceviche de pescado, camarón y concha" },
-  { cat: "tipicos", name: "Encocado de pescado", price: 5.00, emoji: "🐟" },
-  { cat: "tipicos", name: "Encocado mixto", price: 7.00, emoji: "🥘" },
-  { cat: "tipicos", name: "Seco de pollo", price: 3.50, emoji: "🍗" },
-  { cat: "tipicos", name: "Tonga manaba", price: 6.00, emoji: "🍱" },
-  { cat: "tipicos", name: "Ceviche jipijapa", price: 5.00, emoji: "🥣" },
-  { cat: "tipicos", name: "Ceviche jipijapa mixto", price: 7.00, emoji: "🥣" },
-  { cat: "tipicos", name: "Ceviche de pescado", price: 5.00, emoji: "🐠" },
+// Datos del menú Fusión Criolla — agrupado por secciones
+const MENU = {
+  tipicos: {
+    label: "Típicos",
+    icon: "🇪🇨",
+    section: "menu",
+    items: [
+      { name: "Encebollado", price: 3.00 },
+      { name: "Guatita", price: 3.50 },
+      { name: "Bandera", price: 6.00, desc: "Guatita, ceviche de pescado, camarón y concha" },
+      { name: "Encocado de pescado", price: 5.00 },
+      { name: "Encocado mixto", price: 7.00 },
+      { name: "Seco de pollo", price: 3.50 },
+      { name: "Tonga manaba", price: 6.00 },
+      { name: "Ceviche jipijapa", price: 5.00 },
+      { name: "Ceviche jipijapa mixto", price: 7.00 },
+      { name: "Ceviche de pescado", price: 5.00 },
+    ],
+  },
+  ceviches: {
+    label: "Ceviches",
+    icon: "🦐",
+    section: "menu",
+    items: [
+      { name: "Ceviche de pescado", price: 8.00 },
+      { name: "Ceviche de camarón", price: 9.00 },
+      { name: "Ceviche de concha", price: 9.00 },
+      { name: "Ceviche mixto", price: 10.00 },
+      { name: "Ceviche marinero", price: 12.00 },
+    ],
+  },
+  arroces: {
+    label: "Arroces & Chaufa",
+    icon: "🍚",
+    section: "menu",
+    items: [
+      { name: "Arroz con mariscos", price: 12.00 },
+      { name: "Arroz con camarones", price: 10.00 },
+      { name: "Arroz con concha", price: 10.00 },
+      { name: "Arroz con cangrejo", price: 13.00 },
+      { name: "Chaufa de mariscos", price: 12.00 },
+      { name: "Chaufa mar y tierra", price: 12.00 },
+    ],
+  },
+  chicharrones: {
+    label: "Chicharrones",
+    icon: "🍤",
+    section: "menu",
+    items: [
+      { name: "Chicharrón de camarón", price: 9.00 },
+      { name: "Chicharrón de pescado", price: 9.00 },
+      { name: "Chicharrón mixto", price: 10.00 },
+    ],
+  },
+  causas: {
+    label: "Causas",
+    icon: "🥔",
+    section: "menu",
+    items: [
+      { name: "Causa acevichada", price: 12.00 },
+      { name: "Causa de camarón", price: 10.00 },
+      { name: "Causa de cangrejo", price: 13.00 },
+      { name: "Trío de causas", price: 13.00 },
+    ],
+  },
+  especiales: {
+    label: "Especiales",
+    icon: "⭐",
+    section: "especialidades",
+    items: [
+      { name: "Ronda", price: 15.00, featured: true },
+      { name: "Lomo saltado", price: 9.00 },
+      { name: "Tabla mar y tierra", price: 13.00 },
+      { name: "Tabla marinera", price: 15.00, featured: true },
+      { name: "Sudado de pescado", price: 11.00 },
+      { name: "Parihuela", price: 13.00 },
+      { name: "Conchas asadas", price: 10.00 },
+    ],
+  },
+  bebidas: {
+    label: "Bebidas",
+    icon: "🥤",
+    section: "bar",
+    items: [
+      { name: "Gaseosa", price: 1.00 },
+      { name: "Agua", price: 1.00 },
+      { name: "Agua con gas", price: 1.00 },
+      { name: "Jugo del día", price: 1.50 },
+      { name: "Limonada frutos rojos", price: 3.00 },
+      { name: "Limonada frozen", price: 3.00 },
+      { name: "Maracuyá frozen", price: 3.00 },
+      { name: "Agua aromática", price: 1.50 },
+      { name: "Café", price: 2.00 },
+    ],
+  },
+  cokteles: {
+    label: "Cocteles",
+    icon: "🍸",
+    section: "bar",
+    items: [
+      { name: "Piña colada", price: 6.00 },
+      { name: "Paloma", price: 6.00 },
+      { name: "Aperol Spritz", price: 6.00, featured: true },
+      { name: "Sex on the beach", price: 5.00 },
+      { name: "Lagoon blue", price: 5.00 },
+      { name: "Cuba libre", price: 6.00 },
+      { name: "Negroni", price: 6.00 },
+      { name: "Moscow mule", price: 6.00 },
+      { name: "Caipirinha", price: 5.00 },
+    ],
+  },
+  mojitos: {
+    label: "Mojitos",
+    icon: "🌿",
+    section: "bar",
+    items: [
+      { name: "Mojito clásico", price: 5.00 },
+      { name: "Mojito frutos rojos", price: 6.00 },
+      { name: "Mojito maracuyá", price: 6.00 },
+    ],
+  },
+  margaritas: {
+    label: "Margaritas",
+    icon: "🍹",
+    section: "bar",
+    items: [
+      { name: "Margarita clásica", price: 5.00 },
+      { name: "Margarita frutos rojos", price: 6.00 },
+      { name: "Margarita maracuyá", price: 6.00 },
+    ],
+  },
+};
 
-  // CEVICHES
-  { cat: "ceviches", name: "Ceviche de pescado", price: 8.00, emoji: "🐟" },
-  { cat: "ceviches", name: "Ceviche de camarón", price: 9.00, emoji: "🦐" },
-  { cat: "ceviches", name: "Ceviche de concha", price: 9.00, emoji: "🐚" },
-  { cat: "ceviches", name: "Ceviche mixto", price: 10.00, emoji: "🥗" },
-  { cat: "ceviches", name: "Ceviche marinero", price: 12.00, emoji: "⚓" },
-
-  // ARROCES Y CHAUFA
-  { cat: "arroces", name: "Arroz con mariscos", price: 12.00, emoji: "🍚" },
-  { cat: "arroces", name: "Arroz con camarones", price: 10.00, emoji: "🦐" },
-  { cat: "arroces", name: "Arroz con concha", price: 10.00, emoji: "🐚" },
-  { cat: "arroces", name: "Arroz con cangrejo", price: 13.00, emoji: "🦀" },
-  { cat: "arroces", name: "Chaufa de mariscos", price: 12.00, emoji: "🥡" },
-  { cat: "arroces", name: "Chaufa mar y tierra", price: 12.00, emoji: "🥡" },
-
-  // CHICHARRONES
-  { cat: "chicharrones", name: "Chicharrón de camarón", price: 9.00, emoji: "🦐" },
-  { cat: "chicharrones", name: "Chicharrón de pescado", price: 9.00, emoji: "🐟" },
-  { cat: "chicharrones", name: "Chicharrón mixto", price: 10.00, emoji: "🍤" },
-
-  // CAUSAS
-  { cat: "causas", name: "Causa acevichada", price: 12.00, emoji: "🥔" },
-  { cat: "causas", name: "Causa de camarón", price: 10.00, emoji: "🥔" },
-  { cat: "causas", name: "Causa de cangrejo", price: 13.00, emoji: "🦀" },
-  { cat: "causas", name: "Trio de causas", price: 13.00, emoji: "✨" },
-
-  // ESPECIALES
-  { cat: "especiales", name: "Ronda", price: 15.00, emoji: "🍽️" },
-  { cat: "especiales", name: "Lomo saltado", price: 9.00, emoji: "🥩" },
-  { cat: "especiales", name: "Tabla mar y tierra", price: 13.00, emoji: "🍖" },
-  { cat: "especiales", name: "Tabla marinera", price: 15.00, emoji: "🦞" },
-  { cat: "especiales", name: "Sudado de pescado", price: 11.00, emoji: "🐟" },
-  { cat: "especiales", name: "Parihuela", price: 13.00, emoji: "🍲" },
-  { cat: "especiales", name: "Conchas asadas", price: 10.00, emoji: "🐚" },
-
-  // BEBIDAS SOFT
-  { cat: "bebidas", name: "Gaseosa", price: 1.00, emoji: "🥤" },
-  { cat: "bebidas", name: "Agua", price: 1.00, emoji: "💧" },
-  { cat: "bebidas", name: "Agua con gas", price: 1.00, emoji: "🫧" },
-  { cat: "bebidas", name: "Jugo del día", price: 1.50, emoji: "🧃" },
-  { cat: "bebidas", name: "Limonada frutos rojos", price: 3.00, emoji: "🍓" },
-  { cat: "bebidas", name: "Limonada frozen", price: 3.00, emoji: "🍋" },
-  { cat: "bebidas", name: "Maracuyá frozen", price: 3.00, emoji: "🥭" },
-  { cat: "bebidas", name: "Agua aromática", price: 1.50, emoji: "🍵" },
-  { cat: "bebidas", name: "Café", price: 2.00, emoji: "☕" },
-
-  // COKTELES
-  { cat: "cokteles", name: "Piña colada", price: 6.00, emoji: "🍍" },
-  { cat: "cokteles", name: "Paloma", price: 6.00, emoji: "🍸" },
-  { cat: "cokteles", name: "Aperol spritz", price: 6.00, emoji: "🥂" },
-  { cat: "cokteles", name: "Sex on the beach", price: 5.00, emoji: "🏖️" },
-  { cat: "cokteles", name: "Lagoon blue", price: 5.00, emoji: "💙" },
-  { cat: "cokteles", name: "Cuba libre", price: 6.00, emoji: "🥃" },
-  { cat: "cokteles", name: "Negroni", price: 6.00, emoji: "🍷" },
-  { cat: "cokteles", name: "Moscow mule", price: 6.00, emoji: "🫚" },
-  { cat: "cokteles", name: "Caipirinha", price: 5.00, emoji: "🍋" },
-
-  // MOJITOS
-  { cat: "mojitos", name: "Mojito clásico", price: 5.00, emoji: "🌿" },
-  { cat: "mojitos", name: "Mojito frutos rojos", price: 6.00, emoji: "🍓" },
-  { cat: "mojitos", name: "Mojito maracuyá", price: 6.00, emoji: "🥭" },
-
-  // MARGARITAS
-  { cat: "margaritas", name: "Margarita clásica", price: 5.00, emoji: "🍹" },
-  { cat: "margaritas", name: "Margarita frutos rojos", price: 6.00, emoji: "🍓" },
-  { cat: "margaritas", name: "Margarita maracuyá", price: 6.00, emoji: "🥭" },
-];
-
-const CATEGORIES = [
-  { id: "all",          label: "Todo",           icon: "🍽️" },
-  { id: "tipicos",      label: "Típicos",        icon: "🇪🇨" },
-  { id: "ceviches",     label: "Ceviches",       icon: "🦐" },
-  { id: "arroces",      label: "Arroces & Chaufa", icon: "🍚" },
-  { id: "chicharrones", label: "Chicharrones",   icon: "🍤" },
-  { id: "causas",       label: "Causas",         icon: "🥔" },
-  { id: "especiales",   label: "Especiales",     icon: "⭐" },
-  { id: "bebidas",      label: "Bebidas",        icon: "🥤" },
-  { id: "cokteles",     label: "Cocteles",       icon: "🍸" },
-  { id: "mojitos",      label: "Mojitos",        icon: "🌿" },
-  { id: "margaritas",   label: "Margaritas",     icon: "🍹" },
+// Tabs principales (como los de Corte Piedra)
+const TABS = [
+  { id: "tipicos",      label: "Típicos" },
+  { id: "ceviches",     label: "Ceviches" },
+  { id: "arroces",      label: "Arroces & Chaufa" },
+  { id: "chicharrones", label: "Chicharrones" },
+  { id: "causas",       label: "Causas" },
+  { id: "especiales",   label: "Especiales" },
+  { id: "bebidas",      label: "Bebidas" },
+  { id: "cokteles",     label: "Cocteles" },
+  { id: "mojitos",      label: "Mojitos" },
+  { id: "margaritas",   label: "Margaritas" },
 ];

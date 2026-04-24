@@ -1,200 +1,127 @@
 (() => {
-  const grid = document.getElementById("menuGrid");
-  const filters = document.getElementById("filters");
+  const menuList = document.getElementById("menu-list");
+  const tabsEl = document.getElementById("tabs");
+  const searchBar = document.getElementById("searchBar");
   const searchInput = document.getElementById("searchInput");
+  const searchToggle = document.getElementById("searchToggle");
   const emptyState = document.getElementById("emptyState");
-  const cartEl = document.getElementById("cart");
-  const overlay = document.getElementById("overlay");
-  const cartItems = document.getElementById("cartItems");
-  const cartTotal = document.getElementById("cartTotal");
-  const cartBadge = document.getElementById("cartBadge");
-  const openCartBtn = document.getElementById("openCart");
-  const closeCartBtn = document.getElementById("closeCart");
-  const checkoutBtn = document.getElementById("checkoutBtn");
   const yearEl = document.getElementById("year");
+  const topnav = document.querySelector(".topnav");
 
-  let activeCat = "all";
+  let activeTab = "all";
   let searchTerm = "";
-  const order = new Map(); // key = item name -> { item, qty }
 
   yearEl.textContent = new Date().getFullYear();
 
-  // --- Render category chips ---
-  CATEGORIES.forEach(cat => {
-    const chip = document.createElement("button");
-    chip.className = "chip" + (cat.id === "all" ? " is-active" : "");
-    chip.dataset.cat = cat.id;
-    chip.innerHTML = `<span>${cat.icon}</span> ${cat.label}`;
-    chip.addEventListener("click", () => {
-      activeCat = cat.id;
-      document.querySelectorAll(".chip").forEach(c => c.classList.remove("is-active"));
-      chip.classList.add("is-active");
-      render();
-    });
-    filters.appendChild(chip);
+  // TOP NAV scroll state
+  window.addEventListener("scroll", () => {
+    topnav.classList.toggle("is-scrolled", window.scrollY > 50);
+  }, { passive: true });
+
+  // SEARCH TOGGLE
+  searchToggle.addEventListener("click", () => {
+    const isHidden = searchBar.hidden;
+    searchBar.hidden = !isHidden;
+    if (isHidden) {
+      searchInput.focus();
+      document.getElementById("menu").scrollIntoView({ behavior: "smooth" });
+    }
   });
-
-  // --- Render menu ---
-  function render() {
-    const term = searchTerm.trim().toLowerCase();
-    const filtered = MENU.filter(item => {
-      const matchCat = activeCat === "all" || item.cat === activeCat;
-      const matchSearch = !term ||
-        item.name.toLowerCase().includes(term) ||
-        (item.desc && item.desc.toLowerCase().includes(term));
-      return matchCat && matchSearch;
-    });
-
-    grid.innerHTML = "";
-
-    if (filtered.length === 0) {
-      emptyState.hidden = false;
-      return;
-    }
-    emptyState.hidden = true;
-
-    // Group by category when showing all
-    if (activeCat === "all") {
-      const byCat = {};
-      filtered.forEach(it => {
-        (byCat[it.cat] ??= []).push(it);
-      });
-      CATEGORIES.forEach(cat => {
-        if (cat.id === "all" || !byCat[cat.id]) return;
-        const label = document.createElement("h3");
-        label.className = "category-label";
-        label.innerHTML = `<span>${cat.icon}</span> ${cat.label}`;
-        grid.appendChild(label);
-        byCat[cat.id].forEach(item => grid.appendChild(buildCard(item)));
-      });
-    } else {
-      filtered.forEach(item => grid.appendChild(buildCard(item)));
-    }
-  }
-
-  function buildCard(item) {
-    const card = document.createElement("article");
-    card.className = "card";
-    card.innerHTML = `
-      <div class="card__head">
-        <div class="card__emoji">${item.emoji || "🍽️"}</div>
-        <div>
-          <h4 class="card__title">${item.name}</h4>
-          ${item.desc ? `<p class="card__desc">${item.desc}</p>` : ""}
-        </div>
-      </div>
-      <div class="card__foot">
-        <span class="card__price">${item.price.toFixed(2)}</span>
-        <button class="card__add" data-name="${item.name}">+ Añadir</button>
-      </div>
-    `;
-    const btn = card.querySelector(".card__add");
-    btn.addEventListener("click", () => {
-      addToOrder(item);
-      btn.classList.add("added");
-      btn.textContent = "✓ Añadido";
-      setTimeout(() => {
-        btn.classList.remove("added");
-        btn.textContent = "+ Añadir";
-      }, 900);
-    });
-    return card;
-  }
-
-  // --- Cart logic ---
-  function addToOrder(item) {
-    const current = order.get(item.name);
-    if (current) current.qty += 1;
-    else order.set(item.name, { item, qty: 1 });
-    renderCart();
-  }
-
-  function changeQty(name, delta) {
-    const entry = order.get(name);
-    if (!entry) return;
-    entry.qty += delta;
-    if (entry.qty <= 0) order.delete(name);
-    renderCart();
-  }
-
-  function renderCart() {
-    cartItems.innerHTML = "";
-    if (order.size === 0) {
-      cartItems.innerHTML = '<p class="cart__empty">Tu orden está vacía. ¡Añade algunos platos!</p>';
-    } else {
-      order.forEach(({ item, qty }) => {
-        const row = document.createElement("div");
-        row.className = "cart-item";
-        row.innerHTML = `
-          <div class="cart-item__emoji">${item.emoji || "🍽️"}</div>
-          <div class="cart-item__info">
-            <div class="cart-item__name">${item.name}</div>
-            <div class="cart-item__price">$${(item.price * qty).toFixed(2)}</div>
-          </div>
-          <div class="cart-item__qty">
-            <button data-action="dec" aria-label="Quitar uno">−</button>
-            <span>${qty}</span>
-            <button data-action="inc" aria-label="Añadir uno">+</button>
-          </div>
-        `;
-        row.querySelector('[data-action="inc"]').addEventListener("click", () => changeQty(item.name, 1));
-        row.querySelector('[data-action="dec"]').addEventListener("click", () => changeQty(item.name, -1));
-        cartItems.appendChild(row);
-      });
-    }
-
-    const { total, count } = getTotals();
-    cartTotal.textContent = `$${total.toFixed(2)}`;
-    cartBadge.textContent = count;
-    cartBadge.style.display = count > 0 ? "inline-grid" : "inline-grid";
-  }
-
-  function getTotals() {
-    let total = 0, count = 0;
-    order.forEach(({ item, qty }) => {
-      total += item.price * qty;
-      count += qty;
-    });
-    return { total, count };
-  }
-
-  function openCart() {
-    cartEl.classList.add("is-open");
-    overlay.classList.add("is-visible");
-    cartEl.setAttribute("aria-hidden", "false");
-  }
-  function closeCart() {
-    cartEl.classList.remove("is-open");
-    overlay.classList.remove("is-visible");
-    cartEl.setAttribute("aria-hidden", "true");
-  }
-
-  openCartBtn.addEventListener("click", openCart);
-  closeCartBtn.addEventListener("click", closeCart);
-  overlay.addEventListener("click", closeCart);
-
-  checkoutBtn.addEventListener("click", () => {
-    if (order.size === 0) {
-      alert("Tu orden está vacía. Añade algunos platos primero.");
-      return;
-    }
-    const lines = ["*Nueva orden — Fusión Criolla* 🍽️", ""];
-    order.forEach(({ item, qty }) => {
-      lines.push(`• ${qty}× ${item.name} — $${(item.price * qty).toFixed(2)}`);
-    });
-    const { total } = getTotals();
-    lines.push("", `*Total:* $${total.toFixed(2)}`);
-    const msg = encodeURIComponent(lines.join("\n"));
-    // Cambia este número por el del restaurante
-    window.open(`https://wa.me/?text=${msg}`, "_blank");
-  });
-
   searchInput.addEventListener("input", e => {
-    searchTerm = e.target.value;
-    render();
+    searchTerm = e.target.value.trim().toLowerCase();
+    renderMenu();
   });
 
-  // Initial render
-  render();
-  renderCart();
+  // --- TABS ---
+  // "Todo" tab first
+  const allTabs = [{ id: "all", label: "Todo" }, ...TABS];
+  allTabs.forEach(t => {
+    const btn = document.createElement("button");
+    btn.className = "tab" + (t.id === "all" ? " is-active" : "");
+    btn.dataset.tab = t.id;
+    btn.textContent = t.label;
+    btn.addEventListener("click", () => {
+      activeTab = t.id;
+      document.querySelectorAll(".tab").forEach(el => el.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      renderMenu();
+    });
+    tabsEl.appendChild(btn);
+  });
+
+  // --- RENDER ---
+  function renderMenu() {
+    menuList.innerHTML = "";
+    let anyRendered = false;
+
+    Object.entries(MENU).forEach(([id, group]) => {
+      if (activeTab !== "all" && activeTab !== id) return;
+
+      // Filter by search
+      const filteredItems = group.items.filter(it => {
+        if (!searchTerm) return true;
+        return it.name.toLowerCase().includes(searchTerm) ||
+               (it.desc && it.desc.toLowerCase().includes(searchTerm));
+      });
+      if (filteredItems.length === 0) return;
+
+      const groupEl = document.createElement("div");
+      groupEl.className = "menu-group";
+      groupEl.innerHTML = `
+        <div class="menu-group__head">
+          <h3 class="menu-group__title">${group.label}</h3>
+        </div>
+        <div class="menu-group__items"></div>
+      `;
+
+      const itemsWrap = groupEl.querySelector(".menu-group__items");
+      filteredItems.forEach(item => {
+        const itemEl = document.createElement("div");
+        itemEl.className = "menu-item" + (item.featured ? " featured" : "");
+        itemEl.innerHTML = `
+          <div class="menu-item__name-wrap">
+            <span class="menu-item__name">${item.name}</span>
+            <span class="menu-item__dots"></span>
+          </div>
+          <span class="menu-item__price">${item.price.toFixed(2)}</span>
+          ${item.desc ? `<div class="menu-item__desc">${item.desc}</div>` : ""}
+        `;
+        itemsWrap.appendChild(itemEl);
+      });
+
+      menuList.appendChild(groupEl);
+      anyRendered = true;
+    });
+
+    emptyState.hidden = anyRendered;
+  }
+
+  // --- NAV PILLS active state ---
+  const pills = document.querySelectorAll(".pill");
+  pills.forEach(p => {
+    p.addEventListener("click", () => {
+      pills.forEach(x => x.classList.remove("pill--active"));
+      p.classList.add("pill--active");
+    });
+  });
+
+  // --- Reveal on scroll ---
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animation = "fadeUp .8s ease both";
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: .1 });
+  document.querySelectorAll(".section-head, .contact__card").forEach(el => {
+    el.style.opacity = "0";
+    io.observe(el);
+  });
+  // Reset opacity when anim runs (IO removes after triggering)
+  document.addEventListener("animationstart", e => {
+    if (e.target.style) e.target.style.opacity = "";
+  });
+
+  renderMenu();
 })();
